@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Segment Tree Visualizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .container { display: flex; justify-content: space-around; }
+        .chart-container { width: 45%; }
+    </style>
+</head>
+<body>
+    <h1>2D Segment Tree Visualizer</h1>
+    <div>
+        <textarea id="inputData" rows="5" cols="50">[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]</textarea>
+        <button onclick="initializeTree()">Initialize Tree</button>
+    </div>
+    <div class="container">
+        <div class="chart-container">
+            <h2>Original Data</h2>
+            <canvas id="originalDataChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Segment Tree</h2>
+            <canvas id="segmentTreeChart"></canvas>
+        </div>
+    </div>
+    <div>
+        <h2>Query</h2>
+        <input type="number" id="lx" placeholder="lx">
+        <input type="number" id="rx" placeholder="rx">
+        <input type="number" id="ly" placeholder="ly">
+        <input type="number" id="ry" placeholder="ry">
+        <button onclick="querySum()">Query Sum</button>
+        <p id="queryResult"></p>
+    </div>
+
+    <script>
+        let originalDataChart, segmentTreeChart;
+
+        async function initializeTree() {
+            console.log("Initializing tree..."); // Debug log
+            const inputData = JSON.parse(document.getElementById('inputData').value);
+            console.log("Input data:", inputData); // Debug log
+            try {
+                const response = await fetch('/initialize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: inputData })
+                });
+                console.log("Response status:", response.status); // Debug log
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log("Initialization result:", result); // Debug log
+                if (result.tree_id !== undefined) {
+                    updateCharts();
+                }
+            } catch (error) {
+                console.error("Error initializing tree:", error);
+            }
+        }
+
+        async function updateCharts() {
+            console.log("Updating charts..."); // Debug log
+            try {
+                const originalData = await (await fetch('/get_data')).json();
+                const treeData = await (await fetch('/get_tree')).json();
+                
+                console.log("Original data:", originalData); // Debug log
+                console.log("Tree data:", treeData); // Debug log
+
+                updateChart(originalDataChart, originalData, 'Original Data');
+                updateChart(segmentTreeChart, treeData, 'Segment Tree');
+            } catch (error) {
+                console.error("Error updating charts:", error);
+            }
+        }
+
+        function updateChart(chart, data, label) {
+            if (chart) chart.destroy();
+            
+            const ctx = document.getElementById(label.replace(' ', '') + 'Chart').getContext('2d');
+            return new Chart(ctx, {
+                type: 'heatmap',
+                data: {
+                    datasets: [{
+                        data: data.flatMap((row, i) => 
+                            row.map((value, j) => ({x: j, y: i, v: value}))
+                        ),
+                        label: label,
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { type: 'linear', position: 'bottom' },
+                        y: { type: 'linear', reverse: true }
+                    }
+                }
+            });
+        }
+
+        async function querySum() {
+            const lx = document.getElementById('lx').value;
+            const rx = document.getElementById('rx').value;
+            const ly = document.getElementById('ly').value;
+            const ry = document.getElementById('ry').value;
+
+            try {
+                const response = await fetch('/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lx, rx, ly, ry })
+                });
+                const result = await response.json();
+                document.getElementById('queryResult').textContent = `Sum: ${result.sum}`;
+            } catch (error) {
+                console.error("Error querying sum:", error);
+            }
+        }
+
+        window.onload = initializeTree;
+    </script>
+</body>
+</html>
