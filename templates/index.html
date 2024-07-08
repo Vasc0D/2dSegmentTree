@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SegmentTree2D Visualizer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .matrix-cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ddd;
+            text-align: center;
+            background-color: #f0f8ff;
+            margin: 2px;
+        }
+        .selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #matrix {
+            display: inline-block;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>SegmentTree2D Visualizer</h1>
+    <div>
+        <label for="rows">Rows:</label>
+        <input type="number" id="rows" min="1" max="10" value="5">
+        <label for="cols">Columns:</label>
+        <input type="number" id="cols" min="1" max="10" value="5">
+        <button onclick="initializeMatrix()">Initialize</button>
+    </div>
+    <div id="matrix"></div>
+    <div>
+        <h2>Operations</h2>
+        <button id="saveMatrix" onclick="saveMatrix()">Save Matrix</button>
+        <button id="enableEdit" onclick="enableEdit()" disabled>Enable Edit</button>
+        <button id="updateValue" onclick="updateValue()" disabled>Update Value</button>
+        <button id="toggleSumMode" onclick="toggleSumMode()" disabled>Toggle Sum Mode</button>
+    </div>
+    <div id="result"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
