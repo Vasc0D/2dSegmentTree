@@ -1,6 +1,13 @@
-# 2dSegmentTree Visualizer
+# 2D SegmentTree Visualizer
 
-Instrucciones
+## Curso: Algoritmos y Estructuras de Datos
+
+## Integrantes
+
+### 1. Vasco Diaz
+### 2. Denzel Bautista
+
+## Instrucciones
 
 1. Crear el entorno virtual
 
