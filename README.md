@@ -32,3 +32,5 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+
+Este repositorio contiene la estructura de datos 2D Segment Tree en C++ y un visualizador realizado con python y flask.
